@@ -35,8 +35,9 @@ const purpose = {
   validate: () => {
     return { valid: true };
   },
-  update: (proof: any) => {
-    proof.proofPurpose = "assertionMethod";
+  update: (proofz: any) => {
+    proofz.proofPurpose = "assertionMethod";
+    proof = proofz
     return proof;
   }
 };
