@@ -2,7 +2,7 @@
   "name": "@transmute/jose-ld",
   "author": "Orie Steele",
   "module": "dist/jose-ld.esm.js",
-  "version": "0.7.0-unstable.35",
+  "version": "0.7.0-unstable.80",
   "license": "Apache-2.0",
   "homepage": "https://github.com/transmute-industries/verifiable-data/tree/main/packages/jose-ld",
   "repository": {
@@ -20,7 +20,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=16"
   },
   "scripts": {
     "start": "tsdx watch",
@@ -49,11 +49,10 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.2",
-    "@transmute/ed25519-key-pair": "^0.7.0-unstable.35",
-    "@transmute/secp256k1-key-pair": "^0.7.0-unstable.35",
-    "@transmute/web-crypto-key-pair": "^0.7.0-unstable.35",
-    "@transmute/x25519-key-pair": "^0.7.0-unstable.35",
-    "jose": "^3.17.0",
+    "@transmute/ed25519-key-pair": "^0.7.0-unstable.80",
+    "@transmute/secp256k1-key-pair": "^0.7.0-unstable.80",
+    "@transmute/web-crypto-key-pair": "^0.7.0-unstable.80",
+    "@transmute/x25519-key-pair": "^0.7.0-unstable.80",
     "size-limit": "^4.9.2",
     "ts-jest": "^26.5.0",
     "tsdx": "^0.14.1",
@@ -65,6 +64,7 @@
     "@stablelib/aes-kw": "^1.0.0",
     "@stablelib/xchacha20poly1305": "^1.0.0",
     "base64url": "^3.0.1",
+    "jose": "^4.3.8",
     "web-streams-polyfill": "^3.0.3"
   }
 }

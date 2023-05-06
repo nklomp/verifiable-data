@@ -2,6 +2,8 @@ import jsonld from "@digitalcredentials/jsonld";
 import * as sec from "@transmute/security-context";
 import * as cred from "@digitalcredentials/credentials-context";
 import { Ed25519VerificationKey2018 } from "./Ed25519VerificationKey2018";
+import { VerificationMethod } from "./types";
+
 const sha = require("./sha256digest");
 
 export interface IEd25519Signature2018Options {
@@ -72,7 +74,7 @@ export class Ed25519Signature2018 {
     input: any,
     { documentLoader, expansionMap, skipExpansion }: any
   ) {
-    return jsonld.canonize(input, {
+    return jsonld.safeCanonize(input, {
       algorithm: "URDNA2015",
       format: "application/n-quads",
       documentLoader,
@@ -171,17 +173,6 @@ export class Ed25519Signature2018 {
     // add API overrides
     if (date) {
       proof.created = date;
-
-      if (this.originalDate && this.originalDate !== date) {
-        console.warn(
-          [
-            "The proof.created is of type xsd:dateTime(https://www.w3.org/TR/xmlschema-2/#dateTime), this is different from the input provided",
-            "Original Input: " + JSON.stringify(this.originalDate),
-            "Current Proof.created value: " + date,
-            "Please provide a conforming XML date string with format YYYY-MM-DDTHH:mm:ssZ to avoid seeing this message"
-          ].join("\n")
-        );
-      }
     }
 
     // `verificationMethod` is for newer suites, `creator` for legacy
@@ -232,37 +223,31 @@ export class Ed25519Signature2018 {
       throw new Error('No "verificationMethod" or "creator" found in proof.');
     }
     const { document } = await documentLoader(verificationMethod);
-    const framed = await jsonld.frame(
-      verificationMethod,
-      {
-        "@context": document["@context"],
-        "@embed": "@always",
-        id: verificationMethod
-      },
-      {
-        // use the cache of the document we just resolved when framing
-        documentLoader: (iri: string) => {
-          if (iri.startsWith(document.id)) {
-            return {
-              documentUrl: iri,
-              document
-            };
-          }
-          return documentLoader(iri);
-        }
-      }
+    const method = document.verificationMethod.find(
+      (m: VerificationMethod) => m.id === verificationMethod
     );
+    const methodResponse = {
+      "@context": document["@context"],
+      ...method,
+      controller: {
+        id: verificationMethod
+      }
+    };
 
-    if (!framed) {
+    const response = {
+      ...methodResponse
+    };
+
+    if (!response) {
       throw new Error(`Verification method ${verificationMethod} not found.`);
     }
 
     // ensure verification method has not been revoked
-    if (framed.revoked !== undefined) {
+    if (response.revoked !== undefined) {
       throw new Error("The verification method has been revoked.");
     }
 
-    return framed;
+    return methodResponse;
   }
 
   async verifySignature({ verifyData, verificationMethod, proof }: any) {

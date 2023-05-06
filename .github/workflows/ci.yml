@@ -1,28 +1,90 @@
 name: CI
-on: [push]
+
+on: [pull_request]
+
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
     if: "! contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      matrix:
+        node-version:
+          - 16.14.2
     steps:
-      - name: Begin CI...
+      - name: Checkout
         uses: actions/checkout@v2
-      # We need to fetch main so that "lerna run test --since origin/main" works
-      # https://github.com/actions/checkout/issues/118
-      - run: |
-          git fetch --no-tags --prune --depth=1 origin +refs/heads/main:refs/remotes/origin/main
-      - name: Use Node 14
-        uses: actions/setup-node@v1
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
       - name: Install
-        run: npm run install:ci
+        uses: bahmutov/npm-install@v1
+
+      - name: Bootstrap
+        run: npx lerna bootstrap
+
+      - name: Link
+        run: npx lerna link
+
+      - uses: actions/cache@v2
+        id: cache-build
+        with:
+          path: |
+            ./*
+          key: ${{ github.sha }}
+
+  lint:
+    concurrency: lint
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.2
+
+      - uses: actions/cache@v2
+        id: cache-restore
+        with:
+          path: |
+            ./*
+          key: ${{ github.sha }}
 
       - name: Lint
-        run: npm run lint -- --since origin/main
+        run: npm run lint
+
+  test:
+    concurrency: test
+    needs:
+      - build
+    strategy:
+      matrix:
+        node-version:
+          - 16.14.2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
+      - uses: actions/cache@v2
+        id: cache-restore
+        with:
+          path: |
+            ./*
+          key: ${{ github.sha }}
 
       - name: Test
-        run: npm run test -- --since origin/main
+        run: npm run test
 
-      - name: Build
-        run: npm run build -- --since origin/main
+      

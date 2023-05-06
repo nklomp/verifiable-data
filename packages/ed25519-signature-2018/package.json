@@ -2,7 +2,7 @@
   "name": "@sphereon/ed25519-signature-2018",
   "author": "Sphereon",
   "module": "dist/ed25519-signature-2018.esm.js",
-  "version": "0.7.0-unstable.2",
+  "version": "0.7.0-unstable.3",
   "license": "Apache-2.0",
   "homepage": "https://github.com/transmute-industries/verifiable-data/tree/main/packages/ed25519-signature-2018",
   "repository": {
@@ -20,7 +20,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "publishConfig": {
     "access": "public"
@@ -29,14 +29,15 @@
     "start": "tsdx watch",
     "prepack": "copyfiles --error --flat ./src/sha256digest* ./dist/",
     "build": "tsdx build && copyfiles --error --flat ./src/sha256digest* ./dist/",
-    "pretest": "node scripts/digital-bazaar.generate-fixture.js && node scripts/digital-bazaar.term-test.js && node scripts/digital-bazaar.date-fixture.js",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint src --fix",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "generate:fixtures": "node scripts/digital-bazaar.generate-fixture.js && node scripts/digital-bazaar.term-test.js && node scripts/dates/digital-bazaar.issuanceDate-fixture.js && node scripts/dates/digital-bazzar.suiteConstructor-fixture.js && node scripts/dates/digital-bazzar.suiteDirect-fixture.js"
   },
   "devDependencies": {
     "@digitalbazaar/ed25519-signature-2018": "^2.0.1",
     "@digitalbazaar/ed25519-verification-key-2018": "^3.1.1",
+    "@transmute/linked-data-proof": "^0.7.0-unstable.80",
     "json-pointer": "^0.6.1",
     "@digitalcredentials/jsonld-signatures": "^9.3.1",
     "moment": "^2.29.1",
@@ -50,9 +51,10 @@
     "fast-text-encoding": "^1.0.3",
     "isomorphic-webcrypto": "^2.3.8",
     "@digitalcredentials/credentials-context": "^1.0.5",
-    "@transmute/ed25519-key-pair": "0.7.0-unstable.35",
-    "@transmute/jose-ld": "0.7.0-unstable.35",
-    "@transmute/security-context": "0.7.0-unstable.35",
+    "@transmute/credentials-context": "^0.7.0-unstable.80",
+    "@transmute/ed25519-key-pair": "0.7.0-unstable.2",
+    "@transmute/jose-ld": "^0.7.0-unstable.80",
+    "@transmute/security-context": "^0.7.0-unstable.80",
     "@digitalcredentials/jsonld": "^5.2.1"
   },
   "browser": {

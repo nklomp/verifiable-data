@@ -2,6 +2,10 @@
 
 ![CI](https://github.com/transmute-industries/verifiable-data/workflows/CI/badge.svg) ![CD](https://github.com/transmute-industries/verifiable-data/workflows/CD/badge.svg)
 
+### What is Verifiable Data?
+
+Verifiable Data is the library that powers [W3C Decentralized Identifiers](https://www.w3.org/TR/did-core/) & [W3C Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) for [Transmute](https://github.com/transmute-industries).
+
 ## Table of Contents
 
 - [contexts](#contexts)
@@ -16,14 +20,6 @@
   - [jws 2020](./packages/json-web-signature)
 - [credential suites](#credential-suites)
   - [revocation list 2020](./packages/vc-status-rl-2020)
-- [universal wallet](#universal-wallett)
-  - [base wallet](./packages/universal-wallet)
-  - [did key plugin](./packages/universal-wallet-did-key-plugin)
-  - [did web plugin](./packages/universal-wallet-did-web-plugin)
-  - [verifiable credentials plugin](./packages/universal-wallet-vc-plugin)
-  - [encrypted data vaults plugin](./packages/universal-wallet-edv-plugin)
-  - [google secrets plugin](./packages/universal-wallet-google-secrets)
-  - [fastify vc http api plugin](./packages/universal-wallet-fastify-plugin)
 - [command line interface](./packages/cli)
 - [hashlink](./packages/hl)
 - [compressable bitstring](./packages/compressable-bitstring)
@@ -33,4 +29,37 @@
 
 ## Development
 
-Requires node 14.
+Node Version
+
+```
+nvm install 16.14.2
+nvm use 16.14.2
+npm i npm@8.5.0 -g
+```
+
+Install build and run tests for all packages
+
+```
+git clone https://github.com/transmute-industries/verifiable-data.git
+cd verifiable-data
+npm i
+npm t
+```
+
+## Lerna Information
+
+It is important for developers working in this repo to understand that `lerna` is used to manage and link off the package contained. For more information regarding what `lerna` is and why it's used, click [here](https://github.com/lerna/lerna).
+
+### Common Lerna Commands
+
+Below is a short list of the lerna commands you will encounter while working in this repo, along with some information on when they should be used.
+
+1. `lerna bootstrap`: This command is used to build and link all of the packages in the repo. This command takes a significant amount of time to complete and should be used very conservatively. In your typical development workflow, you should only run this once when starting on a task or after running `npm install` inside one of the packages.
+
+2. `lerna link`: This command is used to symlink all of the packages. This command is what you will want to run when working in a package, and you want all of the other packages to include the latest changes. This means you should be using this command very frequently.
+
+IMPORTANT: It is vital when running these commands, that you do not ever exit the commands early. If you do exit early, your environment will become completely broken. Should this happen, you can always get to a fresh working state by running `npm run install:clean`. This command will clean out all of your packages, and then rebuild everything with `lerna bootstrap`.
+
+## License
+
+[Apache-2.0](./LICENSE) © Transmute Industries Inc.

@@ -6,7 +6,6 @@ import {
   Secp256k1KeyPair,
   EcdsaSecp256k1VerificationKey2019,
 } from '@transmute/secp256k1-key-pair';
-import { Bls12381G2KeyPair } from '@transmute/bls12381-key-pair';
 
 import crypto from 'crypto';
 import { JWS } from '@transmute/jose-ld';
@@ -32,10 +31,6 @@ const getKeyPairForKtyAndCrv = (kty: string, crv: string) => {
       return Secp256k1KeyPair;
     }
 
-    if (crv === 'BLS12381_G2') {
-      return Bls12381G2KeyPair;
-    }
-
     if (['P-256', 'P-384', 'P-521'].includes(crv)) {
       return WebCryptoKey;
     }
@@ -53,9 +48,6 @@ const getKeyPairForType = (k: any) => {
   if (k.type === 'EcdsaSecp256k1VerificationKey2019') {
     return Secp256k1KeyPair;
   }
-  if (k.type === 'Bls12381G2Key2020') {
-    return Bls12381G2KeyPair;
-  }
 
   if (['P256Key2021', 'P384Key2021', 'P521Key2021'].includes(k.type)) {
     return WebCryptoKey;
@@ -66,7 +58,7 @@ const getKeyPairForType = (k: any) => {
 
 const getVerifier = async (k: any, options = { detached: true }) => {
   const { publicKeyJwk } = await k.export({ type: 'JsonWebKey2020' });
-  const { kty, crv } = publicKeyJwk;
+  const { kty, crv, alg } = publicKeyJwk;
   if (kty === 'OKP') {
     if (crv === 'Ed25519') {
       return JWS.createVerifier(k.verifier('EdDsa'), 'EdDSA', options);
@@ -75,7 +67,11 @@ const getVerifier = async (k: any, options = { detached: true }) => {
 
   if (kty === 'EC') {
     if (crv === 'secp256k1') {
-      return JWS.createVerifier(k.verifier('Ecdsa'), 'ES256K', options);
+      if (alg && alg === 'ES256K-R') {
+        return JWS.createVerifier(k.verifier('EcRecover'), 'ES256K-R', options);
+      } else {
+        return JWS.createVerifier(k.verifier('Ecdsa'), 'ES256K', options);
+      }
     }
 
     if (crv === 'P-256') {
@@ -101,6 +97,7 @@ const getVerifier = async (k: any, options = { detached: true }) => {
 const getSigner = async (k: any, options = { detached: true }) => {
   const { publicKeyJwk } = await k.export({ type: 'JsonWebKey2020' });
   const { kty, crv } = publicKeyJwk;
+  const { alg } = k;
   if (kty === 'OKP') {
     if (crv === 'Ed25519') {
       return JWS.createSigner(k.signer('EdDsa'), 'EdDSA', options);
@@ -108,7 +105,11 @@ const getSigner = async (k: any, options = { detached: true }) => {
   }
   if (kty === 'EC') {
     if (crv === 'secp256k1') {
-      return JWS.createSigner(k.signer('Ecdsa'), 'ES256K', options);
+      if (alg && alg === 'ES256K-R') {
+        return JWS.createSigner(k.signer('EcRecover'), 'ES256K-R', options);
+      } else {
+        return JWS.createSigner(k.signer('Ecdsa'), 'ES256K', options);
+      }
     }
     if (crv === 'BLS12381_G2') {
       throw new Error('BLS12381_G2 has no registered JWA');

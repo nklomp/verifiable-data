@@ -2,7 +2,7 @@
   "name": "@transmute/linked-data-proof",
   "author": "Orie Steele",
   "module": "dist/linked-data-proof.esm.js",
-  "version": "0.7.0-unstable.35",
+  "version": "0.7.0-unstable.80",
   "license": "Apache-2.0",
   "homepage": "https://github.com/transmute-industries/verifiable-data/tree/main/packages/linked-data-proof",
   "repository": {
@@ -17,7 +17,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=16"
   },
   "publishConfig": {
     "access": "public"
@@ -25,28 +25,29 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "pretest": "node scripts/1-digital-bazaar.generate-fixture.js",
     "test": "tsdx test",
     "lint": "tsdx lint src --fix",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "generate:fixtures": "node scripts/1-digital-bazaar.generate-fixture.js"
   },
   "devDependencies": {
     "@digitalbazaar/ed25519-signature-2018": "^2.0.1",
     "@digitalbazaar/ed25519-verification-key-2018": "^3.1.1",
     "@mattrglobal/jsonld-signatures-bbs": "^0.10.0",
     "@transmute/credentials-context": "0.7.0-unstable.2",
-    "@transmute/did-context": "^0.7.0-unstable.35",
-    "@transmute/ed25519-signature-2018": "^0.7.0-unstable.35",
-    "@transmute/json-web-signature": "^0.7.0-unstable.35",
+    "@transmute/did-context": "^0.7.0-unstable.80",
+    "@transmute/ed25519-signature-2018": "^0.7.0-unstable.80",
+    "@transmute/json-web-signature": "^0.7.0-unstable.80",
+    "@transmute/jsonld": "0.0.4",
     "@transmute/security-context": "0.7.0-unstable.2",
     "crypto-ld": "^3.7.0",
-    "jsonld": "^5.2.0",
     "jsonld-signatures": "^9.3.0",
     "tsdx": "^0.13.2",
     "tslib": "^2.3.0",
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "@transmute/did-key-ed25519": "^0.3.0-unstable.5",
     "serialize-error": "^7.0.1"
   }
 }
