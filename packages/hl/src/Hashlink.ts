@@ -82,18 +82,49 @@ export class Hashlink {
   }
 
   decode() {
+
     throw new Error('Not implemented.');
   }
 
   async verify({ data, hashlink }: VerifyHashlinkOptions) {
+    const components = this._extractComponents(hashlink)
+    const { codecs } = this._extractCodecs(components)
+
+    // generate the hashlink
+    const generatedHashlink = await this.encode({ data, codecs });
+    const generatedComponents = generatedHashlink.split(':');
+
+    // check to see if the encoded hashes match
+    return components[1] === generatedComponents[1];
+  }
+
+  use(codec: any) {
+    this.registeredCodecs[codec.algorithm] = codec;
+  }
+
+  _findDecoder(bytes: any) {
+    const decoders = Object.values(this.registeredCodecs);
+    const decoder: any = decoders.find((decoder: any) =>
+      decoder.identifier.every((id: any, i: any) => id === bytes[i])
+    );
+    if (!decoder) {
+      throw new Error('Could not determine decoder for: ' + bytes);
+    }
+    return decoder;
+  }
+
+  _extractComponents(hashlink: string): string[] {
     const components = hashlink.split(':');
 
     if (components.length > 3) {
       throw new Error(
-        `Hashlink "${hashlink}" is invalid; ` +
+          `Hashlink "${hashlink}" is invalid; ` +
           'it contains more than two colons.'
       );
     }
+    return components
+  }
+  _extractCodecs(components: string[]) {
 
     // determine the base encoding decoder and decode the multihash value
     const multibaseEncodedMultihash = stringToUint8Array(components[1]);
@@ -118,26 +149,6 @@ export class Hashlink {
     // generate the complete list of codecs
     codecs.push(multihashDecoder.algorithm, multibaseDecoder.algorithm);
 
-    // generate the hashlink
-    const generatedHashlink = await this.encode({ data, codecs });
-    const generatedComponents = generatedHashlink.split(':');
-
-    // check to see if the encoded hashes match
-    return components[1] === generatedComponents[1];
-  }
-
-  use(codec: any) {
-    this.registeredCodecs[codec.algorithm] = codec;
-  }
-
-  _findDecoder(bytes: any) {
-    const decoders = Object.values(this.registeredCodecs);
-    const decoder: any = decoders.find((decoder: any) =>
-      decoder.identifier.every((id: any, i: any) => id === bytes[i])
-    );
-    if (!decoder) {
-      throw new Error('Could not determine decoder for: ' + bytes);
-    }
-    return decoder;
+    return {codecs, multibaseEncodedMultihash, encodedMultihash}
   }
 }

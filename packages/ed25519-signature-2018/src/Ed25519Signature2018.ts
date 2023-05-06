@@ -1,14 +1,8 @@
-import jsonld from "jsonld";
-import crypto from "crypto";
+import jsonld from "@digitalcredentials/jsonld";
 import * as sec from "@transmute/security-context";
-import * as cred from "@transmute/credentials-context";
+import * as cred from "@digitalcredentials/credentials-context";
 import { Ed25519VerificationKey2018 } from "./Ed25519VerificationKey2018";
-
-const sha256 = (data: any) => {
-  const h = crypto.createHash("sha256");
-  h.update(data);
-  return h.digest();
-};
+const sha = require("./sha256digest");
 
 export interface IEd25519Signature2018Options {
   key?: any;
@@ -115,7 +109,7 @@ export class Ed25519Signature2018 {
       documentLoader,
       expansionMap
     });
-    return Buffer.concat([sha256(c14nProofOptions), sha256(c14nDocument)]);
+    return Buffer.concat([await sha.sha256digest(c14nProofOptions), await sha.sha256digest(c14nDocument)]);
   }
 
   async matchProof({ proof }: any) {
