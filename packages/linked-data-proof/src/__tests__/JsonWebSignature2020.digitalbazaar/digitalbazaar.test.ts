@@ -1,7 +1,7 @@
 import { JsonWebKey, JsonWebSignature } from "@transmute/json-web-signature";
 
 import * as fixtures from "./__fixtures__";
-import jsigs from "jsonld-signatures";
+import jsigs from "@digitalcredentials/jsonld-signatures";
 
 let key: JsonWebKey;
 let suite: JsonWebSignature;

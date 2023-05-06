@@ -3,7 +3,7 @@ import DigitalBazzarCredential from "../__fixtures__/credentials/digital-bazaar.
 import TransmuteCredential from "../__fixtures__/credentials/transmute.json";
 import RevocationCredential from "../__fixtures__/credentials/revocation-list.json";
 import documentLoader from "../__fixtures__/documentLoader";
-import { purposes } from "@transmute/linked-data-proof";
+import { purposes } from "@sphereon/linked-data-proof";
 
 // IBYRNE - 02/03/2022
 // Test added for issue reported here: https://difdn.slack.com/archives/C4X50SNUX/p1643793079624299?thread_ts=1643731070.971909&cid=C4X50SNUX

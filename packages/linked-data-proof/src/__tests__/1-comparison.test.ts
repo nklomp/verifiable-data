@@ -1,7 +1,7 @@
 import {
   Ed25519Signature2018,
   Ed25519VerificationKey2018
-} from "@transmute/ed25519-signature-2018";
+} from "@sphereon/ed25519-signature-2018";
 import fs from "fs";
 import path from "path";
 

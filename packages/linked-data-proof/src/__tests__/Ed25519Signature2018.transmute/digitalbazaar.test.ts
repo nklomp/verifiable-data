@@ -1,5 +1,5 @@
 import { Ed25519VerificationKey2018 } from "@digitalbazaar/ed25519-verification-key-2018";
-import { Ed25519Signature2018 } from "@digitalbazaar/ed25519-signature-2018";
+import { Ed25519Signature2018 } from "@sphereon/ed25519-signature-2018";
 
 import * as fixtures from "./__fixtures__";
 import * as jsigs from "../..";

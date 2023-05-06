@@ -1,10 +1,10 @@
 import {
   Ed25519VerificationKey2018,
   Ed25519Signature2018
-} from "@transmute/ed25519-signature-2018";
+} from "@sphereon/ed25519-signature-2018";
 
 import * as fixtures from "./__fixtures__";
-import jsigs from "jsonld-signatures";
+import jsigs from "@digitalcredentials/jsonld-signatures";
 
 let key: any;
 let suite: any;

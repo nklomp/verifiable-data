@@ -2,7 +2,7 @@ import jsonld from "@digitalcredentials/jsonld";
 import * as sec from "@transmute/security-context";
 import * as cred from "@digitalcredentials/credentials-context";
 import { Ed25519VerificationKey2018 } from "./Ed25519VerificationKey2018";
-import { VerificationMethod } from "./types";
+import {VerificationMethod} from "types";
 
 const sha = require("./sha256digest");
 
@@ -223,20 +223,27 @@ export class Ed25519Signature2018 {
       throw new Error('No "verificationMethod" or "creator" found in proof.');
     }
     const { document } = await documentLoader(verificationMethod);
-    const method = document.verificationMethod.find(
-      (m: VerificationMethod) => m.id === verificationMethod
-    );
+
+    let method
+    if (document.id?.includes("#") && document.id === verificationMethod && !document.verificationMethod) {
+      method = document
+    } else {
+      method = document.verificationMethod.find(
+          (m: VerificationMethod) => m.id === verificationMethod
+      )
+    }
+
     const methodResponse = {
       "@context": document["@context"],
       ...method,
       controller: {
-        id: verificationMethod
+        id: verificationMethod.split('#')[0]
       }
     };
 
     const response = {
       ...methodResponse
-    };
+            };
 
     if (!response) {
       throw new Error(`Verification method ${verificationMethod} not found.`);

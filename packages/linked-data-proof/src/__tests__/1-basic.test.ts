@@ -1,7 +1,7 @@
 import {
   Ed25519Signature2018,
   Ed25519VerificationKey2018
-} from "@transmute/ed25519-signature-2018";
+} from "@sphereon/ed25519-signature-2018";
 
 import * as ldp from "..";
 import rawKeyJson from "../__fixtures__/1-keys/key.json";
